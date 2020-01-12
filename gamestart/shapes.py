@@ -17,7 +17,7 @@ class Box(Actor):
             pygame.draw.rect(screen, get_pygcolor(self.stroke_color), self.rect, self.pen_size)
 
 def box(x, y, width, height, fill_color='green', stroke_color=None, pen_size=1):
-    Box(x, y, width, height, fill_color, stroke_color, pen_size).spawn()
+    return Box(x, y, width, height, fill_color, stroke_color, pen_size).spawn()
 
 
 class Circle(Actor):
@@ -37,7 +37,7 @@ class Circle(Actor):
             pygame.draw.circle(screen, get_pygcolor(self.stroke_color), center, self.radius, self.pen_size)
 
 def circle(x, y, radius, fill_color='green', stroke_color=None, pen_size=1):
-    Circle(x, y, radius, fill_color, stroke_color, pen_size).spawn()
+    return Circle(x, y, radius, fill_color, stroke_color, pen_size).spawn()
 
 class Line(Actor):
     def __init__(self, x1, y1, x2, y2, color='green', pen_size=1):
@@ -53,4 +53,4 @@ class Line(Actor):
         pygame.draw.line(screen, get_pygcolor(self.color), (self.x1, self.y1), (self.x2, self.y2), self.pen_size)
 
 def line(x1, y1, x2, y2, color='green', pen_size=1):
-    Line(x1, y1, x2, y2, color, pen_size).spawn()
+    return Line(x1, y1, x2, y2, color, pen_size).spawn()

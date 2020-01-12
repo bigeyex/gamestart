@@ -1,12 +1,19 @@
 import os
 import sys
 import pygame
+import math
 import gamestart.game as game
+
 
 actor_image_buffer = {}
 
 class Actor:
     visible = True
+    rotate = True
+    angle = 0
+    move_target = None
+    move_speed = 0
+    
     def __init__(self, image_name=None, x=512, y=384, width=None):
         if image_name is None:
             image_name = self.image
@@ -55,12 +62,12 @@ class Actor:
 
     def wrap(self):
         if self.rect.x + self.rect.width < 0:
-            self.rect.x = game._screen_size[0] - self.width
-        elif self.rect.x > game._screen_size[0]:
+            self.rect.x = game.window.width - self.width
+        elif self.rect.x > game.window.width:
             self.rect.x = 0
         if self.rect.y + self.rect.height < 0:
-            self.rect.y = game._screen_size[1] - self.height
-        elif self.rect.y > game._screen_size[1]:
+            self.rect.y = game.window.height - self.height
+        elif self.rect.y > game.window.height:
             self.rect.y = 0
 
     def setup(self):
@@ -71,6 +78,38 @@ class Actor:
     
     def hide(self):
         self.visible = False
+
+    def forward(self, distance):
+        self.x += math.cos(self.angle / 180 * math.pi) * distance
+        self.y -= math.sin(self.angle / 180 * math.pi) * distance
+
+    def bounce(self):
+        if self.rect.x < 0:
+            self.rect.x = 0
+            self.angle = 180 - self.angle
+        if self.rect.y < 0:
+            self.rect.y = 0
+            self.angle = 0 - self.angle
+        if self.rect.x + self.rect.width > game.window.width:
+            self.rect.x = game.window.width - self.rect.width
+            self.angle = 180 - self.angle
+        if self.rect.y + self.rect.height > game.window.height:
+            self.rect.y = game.window.height - self.rect.height
+            self.angle = 0 - self.angle
+
+    def hits(self, other, with_pixel=False):
+        return self.rect.colliderect(other.rect)
+
+    def move(self, x, y, time=0):
+        if time == 0:
+            self.x = x
+            self.y = y
+        else: 
+            self.move_target = (x, y)
+            self.move_speed = math.sqrt((x-self.x)*(x-self.x)+(y-self.y)*(y-self.y))
+
+        
+
 
 def actor(image_name, x=512, y=384, width=None):
     return Actor(image_name, x, y, width).spawn()
